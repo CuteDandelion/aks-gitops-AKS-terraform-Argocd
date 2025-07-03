@@ -1,4 +1,25 @@
-# .gitignore
+# Node.js
 node_modules/
 dist/
 .env
+
+# Vite
+.vite/
+
+# Docker
+*.log
+*.pid
+*.tar
+docker-compose.override.yml
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+terraform.tfvars
+override.tf
+override.tf.json
+
+# VSCode
+.vscode/

@@ -20,3 +20,12 @@ module "network" {
   subnet_address_prefixes = var.subnet_address_prefixes
 }
 
+module "acr" {
+  source              = "./modules/acr"
+  resource_group_name = data.azurerm_resource_group.rg.name
+  location            = data.azurerm_resource_group.rg.location
+
+  acr_name      = var.acr_name
+  sku           = var.acr_sku
+  admin_enabled = var.acr_admin_enabled
+}

@@ -15,9 +15,7 @@ variable "resource_group_name" {
 variable "location" {
   description = "Azure region where the Resource Group exists"
   type        = string
-}
-
-# Network Module Config                        
+}                     
 
 variable "vnet_name" {
   description = "The name of the Virtual Network."
@@ -37,4 +35,21 @@ variable "vnet_address_space" {
 variable "subnet_address_prefixes" {
   description = "CIDR blocks for the Subnet"
   type        = list(string)
+}
+
+variable "acr_name" {
+  description = "Name of the Azure Container Registry"
+  type        = string
+}
+
+variable "acr_sku" {
+  description = "SKU for ACR (Basic, Standard, Premium)"
+  type        = string
+  default     = "Basic"
+}
+
+variable "acr_admin_enabled" {
+  description = "Whether to enable the ACR admin account"
+  type        = bool
+  default     = false
 }

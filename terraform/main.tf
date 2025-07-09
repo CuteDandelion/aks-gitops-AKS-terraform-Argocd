@@ -29,3 +29,18 @@ module "acr" {
   sku           = var.acr_sku
   admin_enabled = var.acr_admin_enabled
 }
+
+module "identity" {
+  source              = "./modules/identity"
+  resource_group_name = data.azurerm_resource_group.rg.name
+  location            = data.azurerm_resource_group.rg.location
+
+  identity_name       = var.identity_name
+}
+
+module "acr_pull" {
+  source               = "./modules/role_assignment"
+  principal_id         = module.identity.principal_id
+  scope                = module.acr.acr_id
+}
+

@@ -53,3 +53,8 @@ variable "acr_admin_enabled" {
   type        = bool
   default     = false
 }
+
+variable "identity_name" {
+  description = "Name for the user-assigned managed identity"
+  type        = string
+}

@@ -99,3 +99,13 @@ variable "dns_zone_name" {
   description = "DNS zone to create (e.g., kanban.example.com)"
   type        = string
 }
+
+variable "storage_account_name" {
+  description = "Name of the Azure Storage Account used for Terraform state"
+  type        = string
+}
+
+variable "container_name" {
+  description = "Name of the blob container for Terraform state"
+  type        = string
+}

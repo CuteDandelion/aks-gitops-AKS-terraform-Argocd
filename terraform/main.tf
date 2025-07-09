@@ -71,3 +71,8 @@ module "aks" {
   acr_name            = module.acr.acr_name              
 }
 
+module "dns" {
+  source              = "./modules/dns"
+  resource_group_name = data.azurerm_resource_group.rg.name
+  dns_zone_name       = var.dns_zone_name
+}

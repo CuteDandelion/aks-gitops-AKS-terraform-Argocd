@@ -94,3 +94,8 @@ variable "ssh_key_path" {
   type        = string
   default     = "~/.ssh/id_rsa.pub"
 }
+
+variable "dns_zone_name" {
+  description = "DNS zone to create (e.g., kanban.example.com)"
+  type        = string
+}

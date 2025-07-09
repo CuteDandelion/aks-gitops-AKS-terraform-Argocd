@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.0"
+    }
+  }
+}
+
 provider "azurerm" {
   features {}                
 
@@ -42,5 +51,23 @@ module "acr_pull" {
   source               = "./modules/role_assignment"
   principal_id         = module.identity.principal_id
   scope                = module.acr.acr_id
+}
+
+module "aks" {
+  source              = "./modules/aks"
+  resource_group_name = data.azurerm_resource_group.rg.name
+  location            = data.azurerm_resource_group.rg.location
+  cluster_name        = var.cluster_name
+
+  subnet_id           = module.network.subnet_id
+  identity_id         = module.identity.identity_id
+
+  node_count          = var.node_count
+  node_vm_size        = var.node_vm_size
+  linux_admin_username = var.linux_admin_username
+  ssh_key_path         = var.ssh_key_path
+
+  acr_login_server    = module.acr.acr_login_server      
+  acr_name            = module.acr.acr_name              
 }
 

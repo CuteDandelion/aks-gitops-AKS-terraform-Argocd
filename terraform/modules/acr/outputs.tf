@@ -7,3 +7,7 @@ output "acr_id" {
   description = "The fully qualified resource ID of the ACR"
   value       = azurerm_container_registry.acr.id
 }
+
+output "acr_name" {
+  value = azurerm_container_registry.acr.name
+}

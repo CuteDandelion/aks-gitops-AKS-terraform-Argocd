@@ -7,7 +7,6 @@ variable "tenant_id" {
   type        = string
 }
 
-
 variable "resource_group_name" {
   description = "Name of the existing Azure Resource Group"
   type        = string
@@ -15,7 +14,7 @@ variable "resource_group_name" {
 variable "location" {
   description = "Azure region where the Resource Group exists"
   type        = string
-}                     
+}
 
 variable "vnet_name" {
   description = "The name of the Virtual Network."
@@ -57,4 +56,41 @@ variable "acr_admin_enabled" {
 variable "identity_name" {
   description = "Name for the user-assigned managed identity"
   type        = string
+}
+
+variable "cluster_name" {
+  description = "Name of the AKS cluster"
+  type        = string
+}
+
+variable "identity_id" {
+  description = "User-assigned managed identity resource ID"
+  type        = string
+}
+
+variable "acr_login_server" {
+  description = "ACR login server URL (registry_profile.server)"
+  type        = string
+}
+
+variable "node_count" {
+  description = "Number of nodes in the default node pool"
+  type        = number
+}
+
+variable "node_vm_size" {
+  description = "VM size for the default node pool"
+  type        = string
+}
+
+variable "linux_admin_username" {
+  description = "Linux admin username for cluster nodes"
+  type        = string
+  default     = "azureuser"
+}
+
+variable "ssh_key_path" {
+  description = "Path to the public SSH key"
+  type        = string
+  default     = "~/.ssh/id_rsa.pub"
 }

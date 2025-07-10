@@ -6,5 +6,7 @@ output "kube_admin_config_raw" {
 
 output "kube_admin_host" {
   description = "Kubernetes API server endpoint"
-  value       = azurerm_kubernetes_cluster.aks.kube_admin_config[0].host
+  value       = length(azurerm_kubernetes_cluster.aks.kube_admin_config) > 0 ? azurerm_kubernetes_cluster.aks.kube_admin_config[0].host : ""
+  sensitive   = true
 }
+

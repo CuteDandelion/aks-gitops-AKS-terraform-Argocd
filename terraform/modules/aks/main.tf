@@ -3,7 +3,6 @@ resource "azurerm_kubernetes_cluster" "aks" {
   location            = var.location
   resource_group_name = var.resource_group_name
   dns_prefix          = var.cluster_name
-  
 
   default_node_pool {
     name           = "agentpool"
@@ -12,13 +11,15 @@ resource "azurerm_kubernetes_cluster" "aks" {
     vnet_subnet_id = var.subnet_id
   }
 
-identity {
-  type         = "UserAssigned"
-  identity_ids = [var.identity_id]
-}
+  identity {
+    type         = "UserAssigned"
+    identity_ids = [var.identity_id]
+  }
 
   network_profile {
-    network_plugin = "azure"
+    network_plugin   = "azure"
+    service_cidr     = var.service_cidr
+    dns_service_ip   = var.dns_service_ip
   }
 
   linux_profile {
@@ -28,6 +29,7 @@ identity {
     }
   }
 }
+
 
 output "kube_config" {
   value = azurerm_kubernetes_cluster.aks.kube_config_raw

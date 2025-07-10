@@ -109,3 +109,15 @@ variable "container_name" {
   description = "Name of the blob container for Terraform state"
   type        = string
 }
+
+variable "service_cidr" {
+  description = "Kubernetes service address range for AKS."
+  type        = string
+  default     = "10.240.0.0/16"
+}
+
+variable "dns_service_ip" {
+  description = "DNS service IP for AKS."
+  type        = string
+  default     = "10.240.0.10"
+}

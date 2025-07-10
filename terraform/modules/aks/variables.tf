@@ -54,3 +54,16 @@ variable "ssh_key_path" {
   type        = string
   default     = "~/.ssh/id_rsa.pub"
 }
+
+variable "service_cidr" {
+  description = "The Kubernetes service address range."
+  type        = string
+  default     = "10.240.0.0/16"
+}
+
+variable "dns_service_ip" {
+  description = "The IP address within the service CIDR to assign to the DNS service."
+  type        = string
+  default     = "10.240.0.10"
+}
+

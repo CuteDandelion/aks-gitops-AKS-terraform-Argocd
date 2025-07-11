@@ -1,32 +1,109 @@
-name: Terraform Plan
+name: Terraform Plan, Lint & Security Checks
 
 on:
   pull_request:
+    branches:
+      - 'dev'
     paths:
       - 'terraform/**'
       - '.github/workflows/tf-plan.yml'
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+env:
+  RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
+  STORAGE_ACCOUNT_NAME: ${{ secrets.STORAGE_ACCOUNT_NAME }}
+  CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
+  TFSTATE_KEY: ${{ secrets.TFSTATE_KEY }}
+
 jobs:
-  terraform-plan:
+  plan_validate_and_security:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Azure CLI
+      - name: Azure Login (OIDC)
         uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Set up Terraform
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.0
 
       - name: Terraform Init
         working-directory: ./terraform
-        run: terraform init
+        run: |
+          terraform init \
+            -backend-config="resource_group_name=${{ env.RESOURCE_GROUP_NAME }}" \
+            -backend-config="storage_account_name=${{ env.STORAGE_ACCOUNT_NAME }}" \
+            -backend-config="container_name=${{ env.CONTAINER_NAME }}" \
+            -backend-config="key=${{ env.TFSTATE_KEY }}"
+
+      - name: Terraform Validate
+        working-directory: ./terraform
+        run: terraform validate
 
       - name: Terraform Plan
         working-directory: ./terraform
-        run: terraform plan -var-file=terraform.tfvars
+        run: |
+          terraform plan -input=false -no-color > plan_output.txt || true
+          echo "::group::Terraform Plan Output"
+          cat plan_output.txt
+          echo "::endgroup::"
+
+      - name: Install TFLint
+        run: |
+          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+          sudo mv tflint /usr/local/bin/
+
+      - name: Run TFLint
+        working-directory: ./terraform
+        run: |
+          echo "::group::TFLint Results"
+          tflint --init
+          tflint --format compact
+          echo "::endgroup::"
+        continue-on-error: true
+
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: terraform/
+          framework: terraform
+          output_format: cli
+          quiet: true
+        continue-on-error: true
+
+      - name: Run Trivy on Terraform Directory
+        uses: aquasecurity/trivy-action@0.19.0
+        with:
+          scan-type: 'config'
+          scan-ref: 'terraform/'
+        continue-on-error: true
+
+      - name: Post Terraform Plan to PR
+        uses: actions/github-script@v7
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            const fs = require('fs');
+            const planOutput = fs.readFileSync('terraform/plan_output.txt', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `#### 🚀 Terraform Plan Preview\n\`\`\`hcl\n${planOutput}\n\`\`\`\n\n_Review the plan carefully before merging._`
+            });
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+

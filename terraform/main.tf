@@ -85,4 +85,3 @@ module "tfstate" {
   container_name       = var.container_name
 }
 
-#Pipeline1 Trigger

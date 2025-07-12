@@ -13,39 +13,34 @@ on:
       - '.github/workflows/tf-plan.yaml'
 
 jobs:
-  terraform-plan:
+  terraformplan:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: "./terraform/"
-    permissions:
-      id-token: write
-      contents: read
-      pull-requests: write
-      security-events: write
+        working-directory: ./terraform
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Azure Login
+      - name: Azure Login (Service Principal)
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Setup TFLint
+      - name: Setup Tflint
         uses: terraform-linters/setup-tflint@v4
-        with:
-          tflint_version: latest
 
       - name: TFLint Scan
         run: |
+          tflint --init
           tflint --recursive --color
         continue-on-error: true
 
       - name: Run Checkov
         uses: bridgecrewio/checkov-action@v12
         with:
+          directory: .
           framework: terraform
           soft_fail: true
           output_format: cli,sarif
@@ -55,13 +50,11 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         if: success() || failure()
         with:
-          sarif_file: 'terraform/checkov-results-terraform.sarif'
+          sarif_file: ./terraform/checkov-results-terraform.sarif
           wait-for-processing: true
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.7.0
 
       - name: Terraform Init
         run: terraform init \
@@ -88,3 +81,4 @@ jobs:
             });
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+          

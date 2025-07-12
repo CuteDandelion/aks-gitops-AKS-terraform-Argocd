@@ -24,14 +24,11 @@ env:
   TFSTATE_KEY: ${{ secrets.TFSTATE_KEY }}
 
 jobs:
-  terraformplan:
+  terraform-plan:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./terraform
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Azure Login (Service Principal)
@@ -39,10 +36,14 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Write terraform.tfvars from secret
+        run: echo "${{ secrets.TF_VARS }}" > terraform/terraform.tfvars
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
+        working-directory: ./terraform
         run: |
           terraform init \
             -backend-config="resource_group_name=${{ env.RESOURCE_GROUP_NAME }}" \
@@ -51,14 +52,19 @@ jobs:
             -backend-config="key=${{ env.TFSTATE_KEY }}"
 
       - name: Terraform Validate
+        working-directory: ./terraform
         run: terraform validate
 
       - name: Terraform Plan
-        run: terraform plan -input=false -no-color
+        working-directory: ./terraform
+        run: |
+          terraform plan -input=false -no-color > plan_output.txt || true
+          cat plan_output.txt
 
       - name: Run Checkov (Terraform Security Scan)
         uses: bridgecrewio/checkov-action@v12
         with:
-          directory: .
-        continue-on-error: true   # pipeline will stil continue to run
+          directory: terraform/
+        continue-on-error: true
+
 

@@ -1,4 +1,4 @@
-name: Terraform Plan 
+name: Terraform Plan
 
 on:
   push:
@@ -66,5 +66,3 @@ jobs:
         with:
           directory: terraform/
         continue-on-error: true
-
-

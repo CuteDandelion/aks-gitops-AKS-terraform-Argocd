@@ -5,12 +5,12 @@ on:
     branches: [dev]
     paths:
       - 'terraform/**'
-      - '.github/workflows/tf-plan.yaml'
+      - '.github/workflows/tf-plan.yml'
   pull_request:
     branches: [dev]
     paths:
       - 'terraform/**'
-      - '.github/workflows/tf-plan.yaml'
+      - '.github/workflows/tf-plan.yml'
 
 jobs:
   terraformplan:
@@ -81,4 +81,3 @@ jobs:
             });
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-          

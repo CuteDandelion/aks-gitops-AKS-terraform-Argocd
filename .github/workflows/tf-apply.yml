@@ -1,0 +1,50 @@
+name: Terraform Apply
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/tf-apply.yml'
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
+  STORAGE_ACCOUNT_NAME: ${{ secrets.STORAGE_ACCOUNT_NAME }}
+  CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
+  TFSTATE_KEY: ${{ secrets.TFSTATE_KEY }}
+
+jobs:
+  terraform-apply:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure Login (Service Principal)
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Write terraform.tfvars from secret
+        run: echo "${{ secrets.TF_VARS }}" > terraform/terraform.tfvars
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        working-directory: ./terraform
+        run: |
+          terraform init \
+            -backend-config="resource_group_name=${{ env.RESOURCE_GROUP_NAME }}" \
+            -backend-config="storage_account_name=${{ env.STORAGE_ACCOUNT_NAME }}" \
+            -backend-config="container_name=${{ env.CONTAINER_NAME }}" \
+            -backend-config="key=${{ env.TFSTATE_KEY }}"
+
+      - name: Terraform Apply
+        working-directory: ./terraform
+        run: terraform apply -auto-approve

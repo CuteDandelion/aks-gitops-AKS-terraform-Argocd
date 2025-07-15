@@ -18,11 +18,10 @@ jobs:
       pull-requests: write
 
     env:
-
       resource_group_name: rg-aks-kanban
       storage_account_name: rmttfstatehanad
       container_name: tfstate
-      backend_key: terraform.tfstate 
+      backend_key: terraform.tfstate
 
     steps:
       - name: Checkout Repository
@@ -58,11 +57,18 @@ jobs:
             -backend-config="container_name=${{ env.container_name }}" \
             -backend-config="key=${{ env.backend_key }}" \
             -backend-config="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
-            -backend-config="tenant_id=${{ secrets.AZURE_TENANT_ID }}"
+            -backend-config="tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
+            -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}" # Added here
         shell: bash
 
       - name: Terraform Plan
-        run: terraform plan
+        run: |
+          terraform plan \
+            -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}" # Added here
+        shell: bash
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: |
+          terraform apply -auto-approve \
+            -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}" # Added here
+        shell: bash

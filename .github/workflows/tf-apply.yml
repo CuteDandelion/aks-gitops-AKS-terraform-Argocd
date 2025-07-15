@@ -3,7 +3,7 @@ name: Terraform Apply
 on:
   push:
     branches:
-      - dev     # testing on dev
+      - dev     
 
 jobs:
   terraformapply:
@@ -58,17 +58,17 @@ jobs:
             -backend-config="key=${{ env.backend_key }}" \
             -backend-config="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
             -backend-config="tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
-            -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}" # Added here
+            -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}" 
         shell: bash
 
       - name: Terraform Plan
         run: |
           terraform plan \
-            -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}" # Added here
+            -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}" 
         shell: bash
 
       - name: Terraform Apply
         run: |
           terraform apply -auto-approve \
-            -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}" # Added here
+            -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}" 
         shell: bash

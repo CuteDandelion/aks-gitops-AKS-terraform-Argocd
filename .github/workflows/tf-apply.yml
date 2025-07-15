@@ -17,6 +17,13 @@ jobs:
       contents: read
       pull-requests: write
 
+    env:
+
+      resource_group_name: rg-aks-kanban
+      storage_account_name: rmttfstatehanad
+      container_name: tfstate
+      backend_key: terraform.tfstate 
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -31,8 +38,8 @@ jobs:
       - name: Download terraform.tfvars from Azure Blob Storage
         run: |
           az storage blob download \
-            --account-name rmttfstatehanad \
-            --container-name tfstate \
+            --account-name ${{ env.storage_account_name }} \
+            --container-name ${{ env.container_name }} \
             --name terraform.tfvars \
             --file terraform.tfvars \
             --auth-mode login
@@ -44,12 +51,18 @@ jobs:
           terraform_version: 1.11.1
 
       - name: Terraform Init
-        run: terraform init
+        run: |
+          terraform init \
+            -backend-config="resource_group_name=${{ env.resource_group_name }}" \
+            -backend-config="storage_account_name=${{ env.storage_account_name }}" \
+            -backend-config="container_name=${{ env.container_name }}" \
+            -backend-config="key=${{ env.backend_key }}" \
+            -backend-config="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
+            -backend-config="tenant_id=${{ secrets.AZURE_TENANT_ID }}"
+        shell: bash
 
       - name: Terraform Plan
         run: terraform plan
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
-
-        # testing

@@ -121,3 +121,9 @@ variable "dns_service_ip" {
   type        = string
   default     = "10.240.0.10"
 }
+
+variable "backend_key" {
+  description = "The path (blob name) of the Terraform state file within the container."
+  type        = string
+  default     = "terraform.tfstate" # A sensible default
+}

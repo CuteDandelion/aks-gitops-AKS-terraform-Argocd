@@ -15,12 +15,12 @@ jobs:
 
     defaults:
       run:
-        working-directory: "./app/" 
+        working-directory: "./app/"
 
     env:
       ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}
       ACR_NAME: kanbanacr
-      IMAGE_NAME: kanban-app 
+      IMAGE_NAME: kanban-app
       IMAGE_TAG: ${{ github.sha }}
 
     steps:
@@ -39,18 +39,29 @@ jobs:
           docker build -t ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
           docker build -t ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest .
 
+      - name: Debug - Verify ACR_LOGIN_SERVER before Trivy
+        run: |
+          echo "ACR_LOGIN_SERVER_VALUE: ${{ env.ACR_LOGIN_SERVER }}"
+          echo "Constructed IMAGE_REF for Trivy: ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
+        shell: bash
+
+      - name: Debug - Check secret access via context
+        run: |
+          echo "ACR_LOGIN_SERVER from secrets.ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}"
+        shell: bash
+
       - name: Run Trivy vulnerability scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          image-ref: ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           format: 'sarif'
           output: 'trivy-results.sarif'
-          exit-code: '0'
+          exit-code: '0'                       # exit-code of 1 forces pipeline failure on vulnerability detection, while 0 allows it to continue regardless.
           severity: 'HIGH,CRITICAL'
-        env: 
-          TRIVY_USERNAME: ${{ secrets.AZURE_CLIENT_ID }} 
-          TRIVY_PASSWORD: ${{ secrets.AZURE_CLIENT_SECRET }} 
-          TRIVY_AUTH_URL: ${{ env.ACR_LOGIN_SERVER }} 
+        env:
+          TRIVY_USERNAME: ${{ secrets.AZURE_CLIENT_ID }}
+          TRIVY_PASSWORD: ${{ secrets.AZURE_CLIENT_SECRET }}
+          TRIVY_AUTH_URL: ${{ secrets.ACR_LOGIN_SERVER }}
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3

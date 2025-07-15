@@ -5,10 +5,15 @@ resource "azurerm_kubernetes_cluster" "aks" {
   dns_prefix          = var.cluster_name
 
   default_node_pool {
-    name           = "agentpool"
-    node_count     = var.node_count
-    vm_size        = var.node_vm_size
+    name         = "agentpool"
+    node_count   = var.node_count
+    vm_size      = var.node_vm_size
     vnet_subnet_id = var.subnet_id
+    upgrade_settings {
+      drain_timeout_in_minutes    = 0
+      max_surge                   = "10%"
+      node_soak_duration_in_minutes = 0
+    }
   }
 
   identity {
@@ -17,9 +22,9 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 
   network_profile {
-    network_plugin   = "azure"
-    service_cidr     = var.service_cidr
-    dns_service_ip   = var.dns_service_ip
+    network_plugin = "azure"
+    service_cidr   = var.service_cidr
+    dns_service_ip = var.dns_service_ip
   }
 
   linux_profile {
@@ -29,7 +34,6 @@ resource "azurerm_kubernetes_cluster" "aks" {
     }
   }
 }
-
 
 output "kube_config" {
   value = azurerm_kubernetes_cluster.aks.kube_config_raw

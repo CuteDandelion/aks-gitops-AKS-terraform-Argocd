@@ -7,7 +7,7 @@ terraform {
   }
 }
 
-provider "azurerm" {
+provider "azurerm" { #provider block
   features {} 
   subscription_id = var.subscription_id 
   tenant_id       = var.tenant_id      

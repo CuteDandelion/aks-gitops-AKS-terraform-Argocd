@@ -1,16 +1,7 @@
 name: Terraform Plan
 
 on:
-  push:
-    branches: [dev]
-    paths:
-      - 'terraform/**'
-      - '.github/workflows/tf-plan.yml'
-  pull_request:
-    branches: [dev]
-    paths:
-      - 'terraform/**'
-      - '.github/workflows/tf-plan.yml'
+  workflow_dispatch: # Temporary Manual trigger for testing purposes
 
 permissions:
   id-token: write

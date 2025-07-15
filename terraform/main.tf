@@ -43,24 +43,24 @@ module "acr_pull" {
 }
 
 module "aks" {
-  source              = "./modules/aks"
-  resource_group_name = data.azurerm_resource_group.rg.name
-  location            = data.azurerm_resource_group.rg.location
-  cluster_name        = var.cluster_name
+  source                = "./modules/aks"
+  resource_group_name   = data.azurerm_resource_group.rg.name
+  location              = data.azurerm_resource_group.rg.location
+  cluster_name          = var.cluster_name
 
-  subnet_id   = module.network.subnet_id
-  identity_id = module.identity.identity_id
+  subnet_id             = module.network.subnet_id
+  identity_id           = module.identity.identity_id
 
-  node_count           = var.node_count
-  node_vm_size         = var.node_vm_size
-  linux_admin_username = var.linux_admin_username
-  ssh_key_path         = var.ssh_key_path
+  node_count            = var.node_count
+  node_vm_size          = var.node_vm_size
+  linux_admin_username  = var.linux_admin_username
+  ssh_public_key_data   = var.ssh_public_key_data 
 
-  acr_login_server = module.acr.acr_login_server
-  acr_name         = module.acr.acr_name
+  acr_login_server      = module.acr.acr_login_server
+  acr_name              = module.acr.acr_name
 
-  service_cidr   = var.service_cidr
-  dns_service_ip = var.dns_service_ip
+  service_cidr          = var.service_cidr
+  dns_service_ip        = var.dns_service_ip
 }
 
 module "dns" {

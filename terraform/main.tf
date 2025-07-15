@@ -7,7 +7,7 @@ terraform {
   }
 }
 
-provider "azurerm" {  #Provider Block
+provider "azurerm" {  
   features {}
 }
 

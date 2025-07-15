@@ -67,3 +67,8 @@ variable "dns_service_ip" {
   default     = "10.240.0.10"
 }
 
+variable "ssh_public_key_data" {
+  description = "The public SSH key data for AKS cluster nodes."
+  type        = string
+  sensitive   = true 
+}

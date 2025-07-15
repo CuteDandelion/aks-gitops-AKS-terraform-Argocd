@@ -125,5 +125,11 @@ variable "dns_service_ip" {
 variable "backend_key" {
   description = "The path (blob name) of the Terraform state file within the container."
   type        = string
-  default     = "terraform.tfstate" # A sensible default
+  default     = "terraform.tfstate" 
+}
+
+variable "ssh_public_key_data" {
+  description = "The public SSH key data for AKS cluster nodes."
+  type        = string
+  sensitive   = true 
 }

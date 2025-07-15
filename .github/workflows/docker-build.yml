@@ -3,75 +3,72 @@ name: Build, Scan & Push App Image
 on:
   push:
     branches:
-      - dev
+      - 'dev'
+    paths:
+      - 'app/**'
+
+permissions:
+  id-token: write
+  contents: read
+  security-events: write
+
+env:
+  ACR_NAME: 'kanbanacr'
+  IMAGE_NAME: 'kanban-app'
 
 jobs:
-  build-scan-push:
+  build_scan_push:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-      security-events: write
-
-    defaults:
-      run:
-        working-directory: "./app/"
-
-    env:
-      ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}
-      ACR_NAME: kanbanacr
-      IMAGE_NAME: kanban-app
-      IMAGE_TAG: ${{ github.sha }}
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+    - name: Checkout Repository
+      uses: actions/checkout@v4
 
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    - name: Log in to Azure
+      uses: azure/login@v1
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Build Docker Image
-        run: |
-          docker build -t ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
-          docker build -t ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest .
+    - name: Log in to Azure Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ secrets.ACR_LOGIN_SERVER }}
+        username: ${{ secrets.AZURE_CLIENT_ID }}
+        password: ${{ secrets.AZURE_CLIENT_SECRET }}
 
-      - name: Debug - Verify ACR_LOGIN_SERVER before Trivy
-        run: |
-          echo "ACR_LOGIN_SERVER_VALUE: ${{ env.ACR_LOGIN_SERVER }}"
-          echo "Constructed IMAGE_REF for Trivy: ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
-        shell: bash
+    - name: Build Docker image for scanning
+      uses: docker/build-push-action@v5
+      with:
+        context: ./app
+        file: ./app/Dockerfile
+        tags: ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
+        load: true
 
-      - name: Debug - Check secret access via context
-        run: |
-          echo "ACR_LOGIN_SERVER from secrets.ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}"
-        shell: bash
+    - name: Scan Docker image for vulnerabilities with Trivy
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        exit-code: '0' # exit-code of 1 forces pipeline failure on vulnerability detection, while 0 allows it to continue regardless.
+        severity: 'CRITICAL,HIGH'
 
-      - name: Run Trivy vulnerability scan
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          exit-code: '0'                       # exit-code of 1 forces pipeline failure on vulnerability detection, while 0 allows it to continue regardless.
-          severity: 'HIGH,CRITICAL'
-        env:
-          TRIVY_USERNAME: ${{ secrets.AZURE_CLIENT_ID }}
-          TRIVY_PASSWORD: ${{ secrets.AZURE_CLIENT_SECRET }}
-          TRIVY_AUTH_URL: ${{ secrets.ACR_LOGIN_SERVER }}
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+        wait-for-processing: true
 
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
-          wait-for-processing: true
-
-      - name: Push Docker Image to ACR
-        run: |
-          az acr login --name ${{ env.ACR_NAME }}
-          docker push ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          docker push ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
+    - name: Push Docker image to ACR
+      uses: docker/build-push-action@v5
+      with:
+        context: ./app
+        file: ./app/Dockerfile
+        push: true
+        tags: |
+          ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.run_number }}
+          ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest

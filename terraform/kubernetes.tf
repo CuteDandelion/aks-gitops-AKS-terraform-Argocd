@@ -1,3 +1,12 @@
+provider "helm" {
+  kubernetes { 
+    host                   = module.aks.aks_host
+    client_key             = module.aks.aks_client_key
+    client_certificate     = module.aks.aks_client_certificate
+    cluster_ca_certificate = module.aks.aks_cluster_ca_certificate
+  }
+}
+
 resource "helm_release" "nginx_ingress" {
   name       = "nginx-ingress"
   repository = "https://kubernetes.github.io/ingress-nginx"

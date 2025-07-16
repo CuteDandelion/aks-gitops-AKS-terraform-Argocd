@@ -41,6 +41,8 @@ resource "helm_release" "external_dns" {
   version          = "1.14.0"
   namespace        = "external-dns"
   create_namespace = true
+  timeout          = 600
+  wait             = false
 
   values = [
     file("${path.module}/../k8s-manifests/external-dns/external-dns.yml")
@@ -55,10 +57,11 @@ resource "helm_release" "argocd" {
   name             = "argocd"
   repository       = "https://argoproj.github.io/argo-helm"
   chart            = "argo-cd"
-  timeout          = "600"
   version          = "5.24.1"
   namespace        = "argocd"
   create_namespace = true
+  timeout          = 1200
+  wait             = false
 
   values = [
     file("${path.module}/../k8s-manifests/argocd/argocd.yml")

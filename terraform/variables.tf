@@ -95,10 +95,10 @@ variable "ssh_key_path" {
   default     = "~/.ssh/id_rsa.pub"
 }
 
-variable "dns_zone_name" {
-  description = "DNS zone to create (e.g., kanban.example.com)"
-  type        = string
-}
+# variable "dns_zone_name" {
+#  description = "DNS zone to create (e.g., kanban.example.com)"
+#  type        = string
+#}
 
 variable "storage_account_name" {
   description = "Name of the Azure Storage Account used for Terraform state"

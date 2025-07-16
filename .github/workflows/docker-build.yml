@@ -1,4 +1,4 @@
-name: Build, Scan & Push App Image
+name: Docker Build & Deploy
 
 on:
   push:
@@ -31,33 +31,29 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    - name: Log in to Azure Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ${{ secrets.ACR_LOGIN_SERVER }}
-        username: ${{ secrets.AZURE_CLIENT_ID }}
-        password: ${{ secrets.AZURE_CLIENT_SECRET }}
+    - name: Azure CLI Login to ACR
+      run: az acr login --name ${{ env.ACR_NAME }} 
 
     - name: Build Docker image for scanning
       uses: docker/build-push-action@v5
       with:
         context: ./app
         file: ./app/Dockerfile
-        tags: ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
-        load: true
+        tags: ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
+        load: true 
 
     - name: Scan Docker image for vulnerabilities with Trivy
       uses: aquasecurity/trivy-action@master
       with:
-        image-ref: ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
+        image-ref: ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
         format: 'sarif'
         output: 'trivy-results.sarif'
         exit-code: '0' # exit-code of 1 forces pipeline failure on vulnerability detection, while 0 allows it to continue regardless.
         severity: 'CRITICAL,HIGH'
 
     - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v3
       if: always()
+      uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: 'trivy-results.sarif'
         wait-for-processing: true
@@ -67,8 +63,8 @@ jobs:
       with:
         context: ./app
         file: ./app/Dockerfile
-        push: true
+        push: true 
         tags: |
-          ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.run_number }}
-          ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-          ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
+          ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.run_number }}
+          ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest

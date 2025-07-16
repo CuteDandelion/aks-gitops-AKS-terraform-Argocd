@@ -1,7 +1,7 @@
 name: Terraform Apply
 
 on:
-  workflow_dispatch: # Temporary Manual trigger for testing purposes     
+  workflow_dispatch: # Temporary Manual trigger for testing purposes 
 
 jobs:
   terraformapply:

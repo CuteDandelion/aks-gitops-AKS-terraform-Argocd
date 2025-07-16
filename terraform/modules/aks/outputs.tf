@@ -17,18 +17,18 @@ output "aks_host" {
 
 output "aks_client_key" {
   description = "The client key for Kubernetes authentication."
-  value       = azurerm_kubernetes_cluster.aks.kube_config[0].client_key
+  value       = base64decode(azurerm_kubernetes_cluster.aks.kube_config[0].client_key)
   sensitive   = true
 }
 
 output "aks_client_certificate" {
   description = "The client certificate for Kubernetes authentication."
-  value       = azurerm_kubernetes_cluster.aks.kube_config[0].client_certificate
+  value       = base64decode(azurerm_kubernetes_cluster.aks.kube_config[0].client_certificate)
   sensitive   = true
 }
 
 output "aks_cluster_ca_certificate" {
   description = "The CA certificate for the Kubernetes cluster."
-  value       = azurerm_kubernetes_cluster.aks.kube_config[0].cluster_ca_certificate
+  value       = base64decode(azurerm_kubernetes_cluster.aks.kube_config[0].cluster_ca_certificate)
   sensitive   = true
 }

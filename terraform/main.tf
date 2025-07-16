@@ -58,9 +58,9 @@ module "aks" {
 }
 
 #module "dns" {
- # source              = "./modules/dns"
-  #resource_group_name = data.azurerm_resource_group.rg.name  # Remove Azure DNS Zone resource (using Cloudflare for DNS)
-  #dns_zone_name       = var.dns_zone_name
+# source              = "./modules/dns"
+#resource_group_name = data.azurerm_resource_group.rg.name  # Remove Azure DNS Zone resource (using Cloudflare for DNS)
+#dns_zone_name       = var.dns_zone_name
 #}
 
 module "tfstate" {

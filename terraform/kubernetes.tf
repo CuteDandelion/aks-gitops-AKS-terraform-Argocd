@@ -22,6 +22,7 @@ resource "helm_release" "cert_manager" {
   version    = "v1.13.3"
   namespace  = "cert-manager"
   create_namespace = true
+  timeout    = 900
 
   values = [
     file("${path.module}/../k8s-manifests/cert-manager/cert-manager.yml")

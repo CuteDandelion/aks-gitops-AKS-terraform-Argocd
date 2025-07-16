@@ -1,7 +1,9 @@
 name: Terraform Apply
 
 on:
-  workflow_dispatch: # Temporary Manual trigger for testing purposes 
+  push:
+    branches:
+      - 'dev'
 
 jobs:
   terraformapply:

@@ -1,9 +1,3 @@
-provider "helm" {
-  kubernetes {
-    config_path = "~/.kube/config"
-  }
-}
-
 resource "helm_release" "nginx_ingress" {
   name       = "nginx-ingress"
   repository = "https://kubernetes.github.io/ingress-nginx"
@@ -17,7 +11,7 @@ resource "helm_release" "nginx_ingress" {
   ]
 
   depends_on = [
-    module.aks.azurerm_kubernetes_cluster.aks
+    module.aks
   ]
 }
 
@@ -83,7 +77,7 @@ resource "helm_release" "kube_prometheus_stack" {
   create_namespace = true
 
   values = [
-    file("${path.module}/../k8s-manifests/kube-prometheus-stack/kube-prometheus-stack.yml")
+    file("${path.module}/../k8s-manifests/monitoring/kube-prometheus-stack.yml")
   ]
 
   depends_on = [

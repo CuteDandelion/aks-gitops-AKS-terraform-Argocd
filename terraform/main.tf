@@ -1,9 +1,3 @@
-provider "azurerm" {  # provider block
-  features {}
-  subscription_id = var.subscription_id
-  tenant_id       = var.tenant_id
-}
-
 data "azurerm_resource_group" "rg" {
   name = var.resource_group_name
 }

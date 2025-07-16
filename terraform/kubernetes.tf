@@ -1,15 +1,3 @@
-provider "kubernetes" {               # Kubernetes provider
-  alias       = "main"
-  config_path = "~/.kube/config"
-}
-
-provider "helm" {                     # Helm Provider
-  kubernetes {
-    config_path = "~/.kube/config"
-  }
-}
-
-
 resource "helm_release" "nginx_ingress" {
   name       = "nginx-ingress"
   repository = "https://kubernetes.github.io/ingress-nginx"

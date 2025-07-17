@@ -46,6 +46,13 @@ resource "kubernetes_secret" "cloudflare_api_token" {
   type = "Opaque"
 }
 
+resource "kubectl_manifest" "cert_manager_cluster_issuer_staging" {
+  yaml_body = file("../k8s-manifests/cert-manager/issuer.yml")
+  depends_on = [
+    helm_release.cert_manager
+  ]
+}
+
 resource "helm_release" "external_dns" {
   name       = "external-dns"
   repository = "https://kubernetes-sigs.github.io/external-dns/"

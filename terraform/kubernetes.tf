@@ -16,7 +16,9 @@ resource "helm_release" "nginx_ingress" {
 }
 
 resource "kubectl_manifest" "cert_manager_crds" {
-  yaml_body = data.http.cert_manager_crds.body
+  yaml_body = data.http.cert_manager_crds.response_body # Changed 'body' to 'response_body'
+  wait      = true  # Ensure these are included, as discussed previously
+  timeout   = "5m"  # Ensure these are included
 }
 
 data "http" "cert_manager_crds" {

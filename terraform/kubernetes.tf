@@ -7,7 +7,7 @@ resource "helm_release" "nginx_ingress" {
   version    = "4.10.0"
 
   values = [
-    file("${path.module}/../k8s-manifests/ingress/nginx-ingress.yml")
+    file("../k8s-manifests/ingress/nginx-ingress.yml")
   ]
 
   depends_on = [
@@ -16,9 +16,7 @@ resource "helm_release" "nginx_ingress" {
 }
 
 resource "kubectl_manifest" "cert_manager_crds" {
-  yaml_body = data.http.cert_manager_crds.response_body # Changed 'body' to 'response_body'
-  wait      = true  # Ensure these are included, as discussed previously
-  timeout   = "5m"  # Ensure these are included
+  yaml_body = data.http.cert_manager_crds.response_body
 }
 
 data "http" "cert_manager_crds" {
@@ -38,7 +36,7 @@ resource "helm_release" "cert_manager" {
   timeout    = 900
 
   values = [
-    file("${path.module}/../k8s-manifests/cert-manager/cert-manager.yml")
+    file("../k8s-manifests/cert-manager/cert-manager.yml")
   ]
 
   depends_on = [
@@ -70,7 +68,7 @@ resource "helm_release" "external_dns" {
   wait       = false
 
   values = [
-    file("${path.module}/../k8s-manifests/external-dns/external-dns.yml")
+    file("../k8s-manifests/external-dns/external-dns.yml")
   ]
 
   depends_on = [
@@ -89,7 +87,7 @@ resource "helm_release" "argocd" {
   wait       = false
 
   values = [
-    file("${path.module}/../k8s-manifests/argocd/argocd.yml")
+    file("../k8s-manifests/argocd/argocd.yml")
   ]
 
   depends_on = [
@@ -107,7 +105,7 @@ resource "helm_release" "kube_prometheus_stack" {
   create_namespace = true
 
   values = [
-    file("${path.module}/../k8s-manifests/kube-prometheus-stack/kube-prometheus-stack.yml")
+    file("../k8s-manifests/monitoring/kube-prometheus-stack.yml") 
   ]
 
   depends_on = [

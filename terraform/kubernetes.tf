@@ -105,7 +105,7 @@ resource "helm_release" "kube_prometheus_stack" {
   create_namespace = true
 
   values = [
-    file("../k8s-manifests/monitoring/kube-prometheus-stack.yml") 
+    file("../k8s-manifests/monitoring/kube-prometheus-stack.yml")
   ]
 
   depends_on = [

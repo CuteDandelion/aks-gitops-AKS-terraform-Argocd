@@ -30,8 +30,21 @@ resource "helm_release" "cert_manager" {
   ]
 
   depends_on = [
-    helm_release.nginx_ingress
+    helm_release.nginx_ingress,
+    kubectl_manifest.cert_manager_crds,
+    kubernetes_secret.cloudflare_api_token 
   ]
+}
+
+resource "kubernetes_secret" "cloudflare_api_token" {
+  metadata {
+    name      = "cloudflare-api-token-secret"
+    namespace = "cert-manager" 
+  }
+  data = {
+    "api-token" = var.cloudflare_api_token 
+  }
+  type = "Opaque" 
 }
 
 resource "helm_release" "external_dns" {

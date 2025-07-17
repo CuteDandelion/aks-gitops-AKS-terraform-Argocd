@@ -133,3 +133,9 @@ variable "ssh_public_key_data" {
   type        = string
   sensitive   = true
 }
+
+variable "cloudflare_api_token" {
+  description = "Cloudflare API Token for DNS management (used by Cert-Manager and ExternalDNS)."
+  type        = string
+  sensitive   = true 
+}

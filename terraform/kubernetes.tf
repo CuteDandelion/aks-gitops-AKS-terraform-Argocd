@@ -15,16 +15,6 @@ resource "helm_release" "nginx_ingress" {
   ]
 }
 
-resource "kubectl_manifest" "cert_manager_crds" {
-  yaml_body = data.http.cert_manager_crds.response_body
-}
-
-data "http" "cert_manager_crds" {
-  url = "https://github.com/cert-manager/cert-manager/releases/download/v1.13.3/cert-manager.crds.yaml"
-  request_headers = {
-    Accept = "application/yaml"
-  }
-}
 
 resource "helm_release" "cert_manager" {
   name       = "cert-manager"
@@ -41,7 +31,6 @@ resource "helm_release" "cert_manager" {
 
   depends_on = [
     helm_release.nginx_ingress,
-    kubectl_manifest.cert_manager_crds,
     kubernetes_secret.cloudflare_api_token
   ]
 }

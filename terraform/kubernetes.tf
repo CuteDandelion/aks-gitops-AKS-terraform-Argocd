@@ -15,6 +15,12 @@ resource "helm_release" "nginx_ingress" {
   ]
 }
 
+resource "kubectl_manifest" "cert_manager_crds" {
+  yaml_body = file("https://github.com/cert-manager/cert-manager/releases/download/v1.13.3/cert-manager.crds.yaml")
+  wait      = true  
+  timeout   = "5m"  
+}
+
 resource "helm_release" "cert_manager" {
   name             = "cert-manager"
   repository       = "https://charts.jetstack.io"

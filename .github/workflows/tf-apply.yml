@@ -24,7 +24,7 @@ jobs:
       backend_key: terraform.tfstate
       KUBECONFIG: ~/.kube/config
       cluster_name: aks-kanban
-      TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }} # Added this line
+      TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }} 
 
     steps:
       - name: Checkout Repository
@@ -81,5 +81,4 @@ jobs:
         run: |
           terraform apply -auto-approve \
             -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}"
-            # No -var for cloudflare_api_token needed here
         shell: bash

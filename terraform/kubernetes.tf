@@ -1,10 +1,19 @@
+provider "helm" {
+  kubernetes {
+    host                   = module.aks.aks_host
+    client_key             = module.aks.aks_client_key
+    client_certificate     = module.aks.aks_client_certificate
+    cluster_ca_certificate = module.aks.aks_cluster_ca_certificate
+  }
+}
+
 resource "helm_release" "nginx_ingress" {
-  name             = "nginx-ingress"
-  repository       = "https://kubernetes.github.io/ingress-nginx"
-  chart            = "ingress-nginx"
-  namespace        = "ingress-nginx"
+  name       = "nginx-ingress"
+  repository = "https://kubernetes.github.io/ingress-nginx"
+  chart      = "ingress-nginx"
+  namespace  = "ingress-nginx"
   create_namespace = true
-  version          = "4.10.0"
+  version    = "4.10.0"
 
   values = [
     file("${path.module}/../k8s-manifests/ingress/nginx-ingress.yml")
@@ -16,20 +25,24 @@ resource "helm_release" "nginx_ingress" {
 }
 
 resource "kubectl_manifest" "cert_manager_crds" {
-  yaml_body = file("https://github.com/cert-manager/cert-manager/releases/download/v1.13.3/cert-manager.crds.yaml")
-  wait      = true  
-  timeout   = "5m"  
+  yaml_body = data.http.cert_manager_crds.body
+}
+
+data "http" "cert_manager_crds" {
+  url = "https://github.com/cert-manager/cert-manager/releases/download/v1.13.3/cert-manager.crds.yaml"
+  request_headers = {
+    Accept = "application/yaml"
+  }
 }
 
 resource "helm_release" "cert_manager" {
-  name             = "cert-manager"
-  repository       = "https://charts.jetstack.io"
-  chart            = "cert-manager"
-  version          = "v1.13.3"
-  namespace        = "cert-manager"
+  name       = "cert-manager"
+  repository = "https://charts.jetstack.io"
+  chart      = "cert-manager"
+  version    = "v1.13.3"
+  namespace  = "cert-manager"
   create_namespace = true
-  timeout          = 900
-  skip_crds        = true
+  timeout    = 900
 
   values = [
     file("${path.module}/../k8s-manifests/cert-manager/cert-manager.yml")
@@ -38,30 +51,30 @@ resource "helm_release" "cert_manager" {
   depends_on = [
     helm_release.nginx_ingress,
     kubectl_manifest.cert_manager_crds,
-    kubernetes_secret.cloudflare_api_token 
+    kubernetes_secret.cloudflare_api_token
   ]
 }
 
 resource "kubernetes_secret" "cloudflare_api_token" {
   metadata {
     name      = "cloudflare-api-token-secret"
-    namespace = "cert-manager" 
+    namespace = "cert-manager"
   }
   data = {
-    "api-token" = var.cloudflare_api_token 
+    "api-token" = var.cloudflare_api_token
   }
-  type = "Opaque" 
+  type = "Opaque"
 }
 
 resource "helm_release" "external_dns" {
-  name             = "external-dns"
-  repository       = "https://kubernetes-sigs.github.io/external-dns/"
-  chart            = "external-dns"
-  version          = "1.14.0"
-  namespace        = "external-dns"
+  name       = "external-dns"
+  repository = "https://kubernetes-sigs.github.io/external-dns/"
+  chart      = "external-dns"
+  version    = "1.14.0"
+  namespace  = "external-dns"
   create_namespace = true
-  timeout          = 600
-  wait             = false
+  timeout    = 600
+  wait       = false
 
   values = [
     file("${path.module}/../k8s-manifests/external-dns/external-dns.yml")
@@ -73,14 +86,14 @@ resource "helm_release" "external_dns" {
 }
 
 resource "helm_release" "argocd" {
-  name             = "argocd"
-  repository       = "https://argoproj.github.io/argo-helm"
-  chart            = "argo-cd"
-  version          = "5.24.1"
-  namespace        = "argocd"
+  name       = "argocd"
+  repository = "https://argoproj.github.io/argo-helm"
+  chart      = "argo-cd"
+  timeout    = "600"
+  version    = "5.24.1"
+  namespace  = "argocd"
   create_namespace = true
-  timeout          = 1200
-  wait             = false
+  wait       = false
 
   values = [
     file("${path.module}/../k8s-manifests/argocd/argocd.yml")
@@ -93,15 +106,15 @@ resource "helm_release" "argocd" {
 }
 
 resource "helm_release" "kube_prometheus_stack" {
-  name             = "kube-prometheus-stack"
-  repository       = "https://prometheus-community.github.io/helm-charts"
-  chart            = "kube-prometheus-stack"
-  version          = "56.8.0"
-  namespace        = "monitoring"
+  name       = "kube-prometheus-stack"
+  repository = "https://prometheus-community.github.io/helm-charts"
+  chart      = "kube-prometheus-stack"
+  version    = "56.8.0"
+  namespace  = "monitoring"
   create_namespace = true
 
   values = [
-    file("${path.module}/../k8s-manifests/monitoring/kube-prometheus-stack.yml")
+    file("${path.module}/../k8s-manifests/kube-prometheus-stack/kube-prometheus-stack.yml")
   ]
 
   depends_on = [

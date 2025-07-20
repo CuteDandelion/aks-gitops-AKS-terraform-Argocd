@@ -50,7 +50,7 @@ resource "helm_release" "nginx_ingress" {
   namespace        = kubernetes_namespace.ingress_nginx.metadata[0].name
   create_namespace = false
   version          = "4.10.0"
-  timeout          = 900
+  timeout          = 1200
 
   values = [
     file("../k8s-manifests/ingress/nginx-ingress.yml")

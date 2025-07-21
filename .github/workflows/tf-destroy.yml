@@ -13,11 +13,6 @@ jobs:
       run:
         working-directory: ./terraform
 
-    permissions:
-      id-token: write
-      contents: read
-      pull-requests: write
-
     env:
       RESOURCE_GROUP_NAME: rg-aks-kanban
       STORAGE_ACCOUNT_NAME: rmttfstatehanad
@@ -50,18 +45,6 @@ jobs:
             -backend-config="key=${{ env.BACKEND_KEY }}" \
             -backend-config="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
             -backend-config="tenant_id=${{ secrets.AZURE_TENANT_ID }}"
-
-      - name: Install expect
-        run: sudo apt-get update && sudo apt-get install -y expect
-
-      - name: Force unlock Terraform state
-        run: |
-          expect -c '
-            spawn terraform force-unlock 9b56ad61-ad74-8504-0454-18e3817d009e
-            expect "Do you really want to force-unlock?"
-            send "yes\r"
-            expect eof
-          '
 
       - name: Terraform Destroy
         run: terraform destroy -auto-approve -parallelism=1

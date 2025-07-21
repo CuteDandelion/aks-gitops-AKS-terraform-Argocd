@@ -1,11 +1,7 @@
 name: Terraform Plan
 
 on:
-  workflow_dispatch:
-
-  push:
-    branches:
-      - main
+  workflow_dispatch: #testing purposes
 
 permissions:
   id-token: write

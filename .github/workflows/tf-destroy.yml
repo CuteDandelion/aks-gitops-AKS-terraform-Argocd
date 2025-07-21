@@ -1,9 +1,7 @@
 name: Terraform Destroy
 
 on:
-  push:
-    branches:
-      - 'main'
+  workflow_dispatch:
 
 permissions:
   id-token: write
@@ -48,10 +46,9 @@ jobs:
         ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Terraform Destroy
-      run: terraform destroy -auto-approve -var="acr_login_server=${{ secrets.ACR_LOGIN_SERVER }}"
+      run: terraform destroy -auto-approve -lock=false -var="acr_login_server=${{ secrets.ACR_LOGIN_SERVER }}"
       env:
         ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-

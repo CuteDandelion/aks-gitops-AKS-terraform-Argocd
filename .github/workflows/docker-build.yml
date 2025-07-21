@@ -1,9 +1,10 @@
 name: Docker Build & Deploy
 
 on:
+  workflow_dispatch:
   push:
     branches:
-      - 'dev'
+      - main
     paths:
       - 'app/**'
 

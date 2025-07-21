@@ -57,11 +57,13 @@ module "aks" {
   dns_service_ip = var.dns_service_ip
 }
 
-#module "dns" {
-# source              = "./modules/dns"
-#resource_group_name = data.azurerm_resource_group.rg.name  # Remove Azure DNS Zone resource (using Cloudflare for DNS)
-#dns_zone_name       = var.dns_zone_name
-#}
+module "dns" {
+  source               = "./modules/dns"
+  cloudflare_api_token = var.cloudflare_api_token
+  cloudflare_zone_id   = var.cloudflare_zone_id
+  lb_ip_address        = module.aks.nginx_ingress_ip 
+}
+
 
 module "tfstate" {
   source               = "./modules/storage"

@@ -23,7 +23,7 @@ jobs:
       CONTAINER_NAME: tfstate
       BACKEND_KEY: terraform.tfstate
       TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      LOCK_ID: aee0bfd5-8981-1de2-a60f-2248bdf8ece6
+      LOCK_ID: 7741abd8-8e04-1527-e8e1-e24f7350b4ae
       TF_VAR_acr_login_server: "placeholder-for-destroy" 
 
     steps:

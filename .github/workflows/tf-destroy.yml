@@ -13,6 +13,11 @@ jobs:
       run:
         working-directory: ./terraform
 
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+
     env:
       RESOURCE_GROUP_NAME: rg-aks-kanban
       STORAGE_ACCOUNT_NAME: rmttfstatehanad

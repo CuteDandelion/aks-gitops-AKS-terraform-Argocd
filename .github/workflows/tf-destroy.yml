@@ -1,16 +1,18 @@
 name: Terraform Destroy
 
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
 permissions:
   id-token: write
   contents: read
-
-on:
-  push:
-    branches:
-      - 'main'
+  pull-requests: write
 
 jobs:
-  terraform-destroy:
+  terraformdestroy:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -22,10 +24,10 @@ jobs:
       CONTAINER_NAME: tfstate
       BACKEND_KEY: terraform.tfstate
       TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      ACR_LOGIN_SERVER: kanbanacr.azurecr.io 
+      LOCK_ID: a5baa482-cb3c-4492-065f-b57749eb4ded 
 
     steps:
-      - name: Checkout code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Azure Login
@@ -40,6 +42,10 @@ jobs:
         with:
           terraform_version: 1.11.1
 
+      - name: Force Unlock Terraform State (ignore errors)
+        run: |
+          terraform force-unlock -force $LOCK_ID || echo "No lock found or already released"
+
       - name: Terraform Init
         run: |
           terraform init \
@@ -51,7 +57,4 @@ jobs:
             -backend-config="tenant_id=${{ secrets.AZURE_TENANT_ID }}"
 
       - name: Terraform Destroy
-        run: |
-          terraform destroy -auto-approve -parallelism=1 \
-            -var="acr_login_server=${ACR_LOGIN_SERVER}" \
-            -var="cloudflare_api_token=${TF_VAR_cloudflare_api_token}"
+        run: terraform destroy -auto-approve -parallelism=1

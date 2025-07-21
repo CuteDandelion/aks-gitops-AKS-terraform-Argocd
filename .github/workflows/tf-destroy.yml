@@ -48,7 +48,10 @@ jobs:
         ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Terraform Destroy
-      run: terraform destroy -auto-approve -lock=false -var="acr_login_server=${{ secrets.ACR_LOGIN_SERVER }}"
+      run: |
+        terraform destroy -auto-approve -lock=false \
+          -var="acr_login_server=${{ secrets.ACR_LOGIN_SERVER }}" \
+          -var="acr_name=${{ secrets.ACR_NAME }}"
       env:
         ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}

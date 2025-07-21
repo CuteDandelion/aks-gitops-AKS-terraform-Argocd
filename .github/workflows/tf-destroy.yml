@@ -1,13 +1,14 @@
 name: Terraform Destroy
 
+permissions:
+  id-token: write
+  contents: read
+
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 jobs:
-  terraformdestroy:
+  terraform-destroy:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -19,9 +20,10 @@ jobs:
       CONTAINER_NAME: tfstate
       BACKEND_KEY: terraform.tfstate
       TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      ACR_LOGIN_SERVER: your-acr-login-server  # Replace or use a secret
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Azure Login
@@ -39,12 +41,15 @@ jobs:
       - name: Terraform Init
         run: |
           terraform init \
-            -backend-config="resource_group_name=${{ env.RESOURCE_GROUP_NAME }}" \
-            -backend-config="storage_account_name=${{ env.STORAGE_ACCOUNT_NAME }}" \
-            -backend-config="container_name=${{ env.CONTAINER_NAME }}" \
-            -backend-config="key=${{ env.BACKEND_KEY }}" \
+            -backend-config="resource_group_name=${RESOURCE_GROUP_NAME}" \
+            -backend-config="storage_account_name=${STORAGE_ACCOUNT_NAME}" \
+            -backend-config="container_name=${CONTAINER_NAME}" \
+            -backend-config="key=${BACKEND_KEY}" \
             -backend-config="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
             -backend-config="tenant_id=${{ secrets.AZURE_TENANT_ID }}"
 
       - name: Terraform Destroy
-        run: terraform destroy -auto-approve -parallelism=1 -var="acr_login_server=your-acr-login-server"
+        run: |
+          terraform destroy -auto-approve -parallelism=1 \
+            -var="acr_login_server=${ACR_LOGIN_SERVER}" \
+            -var="cloudflare_api_token=${TF_VAR_cloudflare_api_token}"

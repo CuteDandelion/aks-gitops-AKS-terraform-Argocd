@@ -20,12 +20,10 @@ jobs:
       pull-requests: write
 
     env:
-      resource_group_name: rg-aks-kanban
-      storage_account_name: rmttfstatehanad
-      container_name: tfstate
-      backend_key: terraform.tfstate
-      KUBECONFIG: ~/.kube/config
-      cluster_name: aks-kanban
+      RESOURCE_GROUP_NAME: rg-aks-kanban
+      STORAGE_ACCOUNT_NAME: rmttfstatehanad
+      CONTAINER_NAME: tfstate
+      BACKEND_KEY: terraform.tfstate
       TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
     steps:
@@ -39,41 +37,13 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Download terraform.tfvars from Azure Blob Storage
-        run: |
-          az storage blob download \
-            --account-name $STORAGE_ACCOUNT_NAME \
-            --container-name $CONTAINER_NAME \
-            --name terraform.tfvars \
-            --file terraform.tfvars \
-            --auth-mode login
-        shell: bash
-
-      - name: Get AKS Credentials
-        run: |
-          az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $CLUSTER_NAME
-        shell: bash
-
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.11.1
-
       - name: Terraform Init
         run: |
           terraform init \
-            -backend-config="resource_group_name=$RESOURCE_GROUP_NAME" \
-            -backend-config="storage_account_name=$STORAGE_ACCOUNT_NAME" \
-            -backend-config="container_name=$CONTAINER_NAME" \
-            -backend-config="key=$BACKEND_KEY" \
-            -backend-config="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
-            -backend-config="tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
-            -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}"
-        shell: bash
+            -backend-config="resource_group_name=${{ env.RESOURCE_GROUP_NAME }}" \
+            -backend-config="storage_account_name=${{ env.STORAGE_ACCOUNT_NAME }}" \
+            -backend-config="container_name=${{ env.CONTAINER_NAME }}" \
+            -backend-config="key=${{ env.BACKEND_KEY }}"
 
       - name: Terraform Destroy
-        run: |
-          terraform destroy -auto-approve \
-            -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}"
-        shell: bash
-
+        run: terraform destroy -auto-approve

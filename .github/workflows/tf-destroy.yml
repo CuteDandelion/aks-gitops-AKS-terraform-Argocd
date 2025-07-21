@@ -13,11 +13,6 @@ jobs:
       run:
         working-directory: ./terraform
 
-    permissions:
-      id-token: write
-      contents: read
-      pull-requests: write
-
     env:
       RESOURCE_GROUP_NAME: rg-aks-kanban
       STORAGE_ACCOUNT_NAME: rmttfstatehanad
@@ -52,4 +47,4 @@ jobs:
             -backend-config="tenant_id=${{ secrets.AZURE_TENANT_ID }}"
 
       - name: Terraform Destroy
-        run: terraform destroy -auto-approve -parallelism=1
+        run: terraform destroy -auto-approve -parallelism=1 -var="acr_login_server=your-acr-login-server"

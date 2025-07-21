@@ -95,10 +95,18 @@ variable "ssh_key_path" {
   default     = "~/.ssh/id_rsa.pub"
 }
 
-# variable "dns_zone_name" {
-#  description = "DNS zone to create (e.g., kanban.example.com)"
-#  type        = string
-#}
+variable "cloudflare_api_token" {
+  type = string
+}
+
+variable "cloudflare_zone_id" {
+  type = string
+}
+
+variable "lb_ip_address" {
+  type = string
+}
+
 
 variable "storage_account_name" {
   description = "Name of the Azure Storage Account used for Terraform state"
@@ -133,11 +141,3 @@ variable "ssh_public_key_data" {
   type        = string
   sensitive   = true
 }
-
-variable "cloudflare_api_token" {
-  description = "Cloudflare API Token for DNS management (used by Cert-Manager and ExternalDNS)."
-  type        = string
-  sensitive   = true
-}
-
-#trigger

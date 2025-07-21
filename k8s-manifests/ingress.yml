@@ -3,11 +3,17 @@ kind: Ingress
 metadata:
   name: kanban-app-ingress
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - kanban.hanadisa.com
+      secretName: kanban-tls
   rules:
-    - http:
+    - host: kanban.hanadisa.com
+      http:
         paths:
           - path: /
             pathType: Prefix

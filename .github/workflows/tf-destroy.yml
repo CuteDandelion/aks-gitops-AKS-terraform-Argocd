@@ -22,7 +22,7 @@ jobs:
       CONTAINER_NAME: tfstate
       BACKEND_KEY: terraform.tfstate
       TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      ACR_LOGIN_SERVER: your-acr-login-server  # Replace or use a secret
+      ACR_LOGIN_SERVER: kanbanacr.azurecr.io 
 
     steps:
       - name: Checkout code

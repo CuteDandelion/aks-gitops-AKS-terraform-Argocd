@@ -9,6 +9,7 @@ on:
 jobs:
   terraformdestroy:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     defaults:
       run:
         working-directory: ./terraform
@@ -52,4 +53,4 @@ jobs:
             -backend-config="tenant_id=${{ secrets.AZURE_TENANT_ID }}"
 
       - name: Terraform Destroy
-        run: terraform destroy -auto-approve
+        run: terraform destroy -auto-approve -parallelism=1

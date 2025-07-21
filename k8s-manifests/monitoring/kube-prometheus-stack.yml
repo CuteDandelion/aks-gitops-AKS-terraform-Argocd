@@ -1,0 +1,58 @@
+prometheus:
+  enabled: true
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: true
+    ingressClassName: "nginx"
+    annotations:
+      nginx.org/hsts: "true"
+      cert-manager.io/cluster-issuer: issuer
+    hosts:
+      - prometheus.hanadisa.com
+    tls:
+      - secretName: prometheus-ingress-tls
+        hosts:
+          - prometheus.hanadisa.com
+
+grafana:
+  enabled: true
+  adminUser: admin
+  adminExistingSecret: grafana-admin-password
+  adminPasswordKey: admin-password
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: true
+    ingressClassName: "nginx"
+    annotations:
+      nginx.org/hsts: "true"
+      cert-manager.io/cluster-issuer: issuer
+    hosts:
+      - grafana.hanadisa.com
+    tls:
+      - secretName: grafana-ingress-tls
+        hosts:
+          - grafana.hanadisa.com
+  persistence:
+    enabled: true
+    size: 10Gi
+
+
+prometheus-node-exporter:
+  hostPort:
+    enabled: false
+
+kubeStateMetrics:
+  enabled: true
+
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 200m
+        memory: 512Mi

@@ -25,6 +25,7 @@ jobs:
       TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       LOCK_ID: 7741abd8-8e04-1527-e8e1-e24f7350b4ae
       TF_VAR_acr_login_server: "placeholder-for-destroy" 
+      TF_VAR_acr_name: "placeholder-for-destroy"
 
     steps:
       - name: Checkout Repository

@@ -32,3 +32,10 @@ output "aks_cluster_ca_certificate" {
   value       = base64decode(azurerm_kubernetes_cluster.aks.kube_config[0].cluster_ca_certificate)
   sensitive   = true
 }
+
+output "kube_config" {
+  value     = azurerm_kubernetes_cluster.aks.kube_config
+  sensitive = true
+}
+
+

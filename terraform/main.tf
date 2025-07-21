@@ -57,12 +57,35 @@ module "aks" {
   dns_service_ip = var.dns_service_ip
 }
 
+provider "kubernetes" {
+  host                   = module.aks.kube_config[0].host
+  client_certificate     = base64decode(module.aks.kube_config[0].client_certificate)
+  client_key             = base64decode(module.aks.kube_config[0].client_key)
+  cluster_ca_certificate = base64decode(module.aks.kube_config[0].cluster_ca_certificate)
+}
+
+data "kubernetes_service" "nginx_ingress" {
+  metadata {
+    name      = "ingress-nginx-controller"
+    namespace = "ingress-nginx"
+  }
+
+  depends_on = [helm_release.nginx_ingress]
+}
+
+
 module "dns" {
   source               = "./modules/dns"
   cloudflare_api_token = var.cloudflare_api_token
   cloudflare_zone_id   = var.cloudflare_zone_id
-  lb_ip_address        = module.aks.nginx_ingress_ip 
+
+  lb_ip_address = (
+    length(try(data.kubernetes_service.nginx_ingress.status[0].load_balancer[0].ingress, [])) > 0
+    ? data.kubernetes_service.nginx_ingress.status[0].load_balancer[0].ingress[0].ip
+    : null
+  )
 }
+
 
 
 module "tfstate" {

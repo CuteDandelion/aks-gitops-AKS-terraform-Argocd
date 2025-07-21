@@ -16,15 +16,6 @@ resource "kubernetes_namespace" "ingress_nginx" {
   ]
 }
 
-resource "kubernetes_namespace" "external_dns" {
-  metadata {
-    name = "external-dns"
-  }
-  depends_on = [
-    module.aks
-  ]
-}
-
 resource "kubernetes_namespace" "argocd" {
   metadata {
     name = "argocd"
@@ -100,26 +91,6 @@ resource "kubectl_manifest" "cert_manager_cluster_issuer_staging" {
   yaml_body = file("../k8s-manifests/cert-manager/issuer.yml")
   depends_on = [
     helm_release.cert_manager
-  ]
-}
-
-resource "helm_release" "external_dns" {
-  name             = "external-dns"
-  repository       = "https://kubernetes-sigs.github.io/external-dns/"
-  chart            = "external-dns"
-  version          = "1.14.0"
-  namespace        = kubernetes_namespace.external_dns.metadata[0].name
-  create_namespace = false
-  timeout          = 600
-  wait             = false
-
-  values = [
-    file("../k8s-manifests/external-dns/external-dns.yml")
-  ]
-
-  depends_on = [
-    helm_release.cert_manager,
-    kubernetes_namespace.external_dns
   ]
 }
 

@@ -23,7 +23,8 @@ jobs:
       CONTAINER_NAME: tfstate
       BACKEND_KEY: terraform.tfstate
       TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      LOCK_ID: aee0bfd5-8981-1de2-a60f-2248bdf8ece6  
+      LOCK_ID: aee0bfd5-8981-1de2-a60f-2248bdf8ece6
+      TF_VAR_acr_login_server: "placeholder-for-destroy" 
 
     steps:
       - name: Checkout Repository

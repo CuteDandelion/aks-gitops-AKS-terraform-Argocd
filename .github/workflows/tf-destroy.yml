@@ -9,7 +9,6 @@ on:
 permissions:
   id-token: write
   contents: read
-  pull-requests: write
 
 jobs:
   terraformdestroy:
@@ -24,7 +23,7 @@ jobs:
       CONTAINER_NAME: tfstate
       BACKEND_KEY: terraform.tfstate
       TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      LOCK_ID: a5baa482-cb3c-4492-065f-b57749eb4ded 
+      LOCK_ID: aee0bfd5-8981-1de2-a60f-2248bdf8ece6  
 
     steps:
       - name: Checkout Repository
@@ -42,19 +41,19 @@ jobs:
         with:
           terraform_version: 1.11.1
 
-      - name: Force Unlock Terraform State (ignore errors)
+      - name: Terraform Init (with reconfigure)
         run: |
-          terraform force-unlock -force $LOCK_ID || echo "No lock found or already released"
-
-      - name: Terraform Init
-        run: |
-          terraform init \
+          terraform init -reconfigure \
             -backend-config="resource_group_name=${RESOURCE_GROUP_NAME}" \
             -backend-config="storage_account_name=${STORAGE_ACCOUNT_NAME}" \
             -backend-config="container_name=${CONTAINER_NAME}" \
             -backend-config="key=${BACKEND_KEY}" \
             -backend-config="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
             -backend-config="tenant_id=${{ secrets.AZURE_TENANT_ID }}"
+
+      - name: Force Unlock Terraform State (ignore errors)
+        run: |
+          terraform force-unlock -force $LOCK_ID || echo "No lock found or already released"
 
       - name: Terraform Destroy
         run: terraform destroy -auto-approve -parallelism=1

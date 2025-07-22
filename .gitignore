@@ -24,3 +24,6 @@ override.tf.json
 
 # VSCode
 .vscode/
+
+# Ignore backend config
+backend.config

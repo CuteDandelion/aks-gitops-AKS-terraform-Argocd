@@ -1,7 +1,10 @@
 name: Terraform Apply
 
 on:
-  workflow_dispatch: #testing purposes
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   terraformapply:

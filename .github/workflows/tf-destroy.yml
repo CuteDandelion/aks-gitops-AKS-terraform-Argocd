@@ -51,7 +51,8 @@ jobs:
       run: |
         terraform destroy -auto-approve -lock=false \
           -var="acr_login_server=${{ secrets.ACR_LOGIN_SERVER }}" \
-          -var="acr_name=${{ secrets.ACR_NAME }}"
+          -var="acr_name=${{ secrets.ACR_NAME }}" \
+          -var="cloudflare_api_token=${{ secrets.CLOUDFLARE_API_TOKEN }}"
       env:
         ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}

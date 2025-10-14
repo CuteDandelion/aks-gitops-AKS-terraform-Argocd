@@ -42,15 +42,17 @@ jobs:
       #    tenant-id: ${{ secrets.AZURE_TENANT_ID }}
       #    subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Download terraform.tfvars from Azure Blob Storage
-        run: |
-          az storage blob download \
-            --account-name ${{ env.storage_account_name }} \
-            --container-name ${{ env.container_name }} \
-            --name terraform.tfvars \
-            --file terraform.tfvars \
-            --auth-mode login
-        shell: bash
+      #- name: Download terraform.tfvars from Azure Blob Storage
+      #  run: |
+      #    az storage blob download \
+      #      --account-name ${{ env.storage_account_name }} \
+      #      --container-name ${{ env.container_name }} \
+      #      --name terraform.tfvars \
+      #      --file terraform.tfvars \
+      #      --auth-mode login
+      #  shell: bash
+      - name: Write terraform.tfvars from secret
+        run: echo "${{ secrets.TF_VARS }}" | base64 --decode > terraform/terraform.tfvars
 
       - name: Get AKS Credentials
         run: |
@@ -88,4 +90,5 @@ jobs:
             -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}"
 
         shell: bash
+
 

@@ -36,8 +36,8 @@ jobs:
         with:
            creds: ${{ secrets.AZURE_CREDS }}
 
-     # - name: Write terraform.tfvars from secret
-     #   run: echo "${{ secrets.TF_VARS }}" > terraform/terraform.tfvars
+      - name: Write terraform.tfvars from secret
+        run: echo "${{ secrets.TF_VARS }}" > terraform/terraform.tfvars
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -66,5 +66,6 @@ jobs:
         with:
           directory: terraform/
         continue-on-error: true
+
 
 

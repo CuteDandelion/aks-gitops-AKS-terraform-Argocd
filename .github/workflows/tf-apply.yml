@@ -86,10 +86,9 @@ jobs:
 
       - name: Terraform Apply
         run: |
-          terraform apply -auto-approve \
-            -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}"
-
+          terraform apply -auto-approve 
         shell: bash
+
 
 
 

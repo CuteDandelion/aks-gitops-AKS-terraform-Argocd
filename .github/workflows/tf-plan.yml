@@ -25,16 +25,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Azure Login
-        uses: azure/login@v1
+     # - name: Azure Login
+     #   uses: azure/login@v1
+     #   with:
+     #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
+     #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+     #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Azure Login (Service Principal)
+        uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-    #  - name: Azure Login (Service Principal)
-    #    uses: azure/login@v2
-    #    with:
-    #      creds: ${{ secrets.AZURE_CREDENTIALS }}
+           creds: ${{ secrets.AZURE_CREDS }}
 
      # - name: Write terraform.tfvars from secret
      #   run: echo "${{ secrets.TF_VARS }}" > terraform/terraform.tfvars
@@ -66,4 +66,5 @@ jobs:
         with:
           directory: terraform/
         continue-on-error: true
+
 

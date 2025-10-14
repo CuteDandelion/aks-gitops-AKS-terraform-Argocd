@@ -74,8 +74,6 @@ data "kubernetes_service" "nginx_ingress" {
 }
 
 
-# Disable Cloudflare due to no domain
-
 #module "dns" {
 #  source               = "./modules/dns"
 #  cloudflare_api_token = var.cloudflare_api_token

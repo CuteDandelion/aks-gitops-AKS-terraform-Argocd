@@ -32,6 +32,9 @@ jobs:
       with:
         terraform_version: latest
 
+    - name: Write terraform.tfvars from secret
+      run: echo "${{ secrets.TF_VARS }}" | base64 --decode > terraform.tfvars
+
     #- name: Download terraform.tfvars from Blob Storage
     #  run: |
     #    az storage blob download \
@@ -62,4 +65,5 @@ jobs:
         ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
 

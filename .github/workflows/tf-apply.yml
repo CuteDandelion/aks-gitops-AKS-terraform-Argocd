@@ -52,7 +52,7 @@ jobs:
       #      --auth-mode login
       #  shell: bash
       - name: Write terraform.tfvars from secret
-        run: echo "${{ secrets.TF_VARS }}" | base64 --decode > terraform/terraform.tfvars
+        run: echo "${{ secrets.TF_VARS }}" | base64 --decode > terraform.tfvars
 
       - name: Get AKS Credentials
         run: |
@@ -90,5 +90,6 @@ jobs:
             -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}"
 
         shell: bash
+
 
 

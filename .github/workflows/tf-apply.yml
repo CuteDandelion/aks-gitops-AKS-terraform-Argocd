@@ -78,10 +78,10 @@ jobs:
             # No -var for cloudflare_api_token needed here, as TF_VAR_ will handle it
         shell: bash
 
-      - name: Terraform Refresh
-        run: |
-           terraform refresh
-        shell: bash
+      #- name: Terraform Refresh
+      #  run: |
+      #     terraform refresh
+      #  shell: bash
 
       #- name: Terraform Plan
       #  run: |

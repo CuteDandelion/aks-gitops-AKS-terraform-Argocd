@@ -103,13 +103,13 @@ jobs:
         shell: bash
 
        - name: Terraform Apply - Ingress Dependency
-        run: |
-          terraform apply \
-            -target=kubernetes_namespace.ingress_nginx \
-            -target=helm_release.nginx_ingress \
-            -auto-approve \
-            -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}"
-        shell: bash
+         run: |
+           terraform apply \
+             -target=kubernetes_namespace.ingress_nginx \
+             -target=helm_release.nginx_ingress \
+             -auto-approve \
+             -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}"
+         shell: bash
 
 
       - name: Terraform Apply 

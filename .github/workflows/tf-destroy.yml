@@ -35,14 +35,14 @@ jobs:
     - name: Write terraform.tfvars from secret
       run: echo "${{ secrets.TF_VARS }}" | base64 --decode > terraform.tfvars
 
-    #- name: Download terraform.tfvars from Blob Storage
-    #  run: |
-    #    az storage blob download \
-    #      --account-name ${{ secrets.STORAGE_ACCOUNT_NAME }} \
-    #      --container-name ${{ secrets.CONTAINER_NAME }} \
-    #      --name terraform.tfvars \
-    #      --file terraform.tfvars \
-    #      --account-key ${{ secrets.STORAGE_ACCOUNT_KEY }}
+    - name: Download terraform.tfstate from Blob Storage
+      run: |
+        az storage blob download \
+          --account-name ${{ secrets.STORAGE_ACCOUNT_NAME }} \
+          --container-name ${{ secrets.CONTAINER_NAME }} \
+          --name terraform.tfstate \
+          --file terraform.tfstate \
+          --account-key ${{ secrets.STORAGE_ACCOUNT_KEY }}
 
     - name: Terraform Init
       run: |
@@ -65,5 +65,6 @@ jobs:
         ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
 
 

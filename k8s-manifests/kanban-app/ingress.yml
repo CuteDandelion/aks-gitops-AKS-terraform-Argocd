@@ -9,10 +9,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - kanban.203.0.113.10.nip.io
+        - kanban.misakirose.com
       secretName: kanban-tls
   rules:
-    - host: kanban.203.0.113.10.nip.io
+    - host: kanban.misakirose.com
       http:
         paths:
           - path: /

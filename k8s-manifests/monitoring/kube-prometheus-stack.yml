@@ -7,13 +7,13 @@ prometheus:
     ingressClassName: "nginx"
     annotations:
       nginx.org/hsts: "true"
-      cert-manager.io/cluster-issuer: issuer
+      cert-manager.io/cluster-issuer: letsencrypt-prod
     hosts:
-      - prometheus.203.0.113.10.nip.io
+      - prometheus.misakirose.com
     tls:
       - secretName: prometheus-ingress-tls
         hosts:
-          - prometheus.203.0.113.10.nip.io
+          - prometheus.misakirose.com
 
 grafana:
   enabled: true
@@ -27,13 +27,13 @@ grafana:
     ingressClassName: "nginx"
     annotations:
       nginx.org/hsts: "true"
-      cert-manager.io/cluster-issuer: issuer
+      cert-manager.io/cluster-issuer: letsencrypt-prod
     hosts:
-      - grafana.203.0.113.10.nip.io
+      - grafana.misakirose.com
     tls:
       - secretName: grafana-ingress-tls
         hosts:
-          - grafana.203.0.113.10.nip.io
+          - grafana.misakirose.com
   persistence:
     enabled: true
     size: 10Gi

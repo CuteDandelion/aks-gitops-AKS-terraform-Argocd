@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/hanadisa/aks-gitops-kanban
+    repoURL: https://github.com/CuteDandelion/aks-gitops-AKS-terraform-Argocd.git
     targetRevision: main
     path: k8s-manifests/kanban-app
   destination:

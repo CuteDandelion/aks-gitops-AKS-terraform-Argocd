@@ -35,14 +35,14 @@ jobs:
     - name: Write terraform.tfvars from secret
       run: echo "${{ secrets.TF_VARS }}" | base64 --decode > terraform.tfvars
 
-    - name: Download terraform.tfstate from Blob Storage
-      run: |
-        az storage blob download \
-          --account-name ${{ secrets.STORAGE_ACCOUNT_NAME }} \
-          --container-name ${{ secrets.CONTAINER_NAME }} \
-          --name terraform.tfstate \
-          --file terraform.tfstate \
-          --auth-mode login 
+   # - name: Download terraform.tfstate from Blob Storage
+   #   run: |
+   #     az storage blob download \
+   #       --account-name ${{ secrets.STORAGE_ACCOUNT_NAME }} \
+   #       --container-name ${{ secrets.CONTAINER_NAME }} \
+   #       --name terraform.tfstate \
+   #       --file terraform.tfstate \
+   #       --auth-mode login 
 
     - name: Terraform Init
       run: |

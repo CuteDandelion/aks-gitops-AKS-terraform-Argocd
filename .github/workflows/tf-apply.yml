@@ -42,15 +42,15 @@ jobs:
       #    tenant-id: ${{ secrets.AZURE_TENANT_ID }}
       #    subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Download terraform.tfvars from Azure Blob Storage
-        run: |
-          az storage blob download \
-            --account-name ${{ env.storage_account_name }} \
-            --container-name ${{ env.container_name }} \
-            --name ${{ env.backend_key }} \
-            --file ${{ env.backend_key }} \
-            --auth-mode login
-        shell: bash
+     # - name: Download terraform.tfvars from Azure Blob Storage
+     #   run: |
+     #     az storage blob download \
+     #       --account-name ${{ env.storage_account_name }} \
+     #       --container-name ${{ env.container_name }} \
+     #       --name ${{ env.backend_key }} \
+     #       --file ${{ env.backend_key }} \
+     #       --auth-mode login
+     #   shell: bash
         
       - name: Write terraform.tfvars from secret
         run: echo "${{ secrets.TF_VARS }}" | base64 --decode > terraform.tfvars

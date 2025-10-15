@@ -52,7 +52,8 @@ jobs:
           -backend-config="container_name=${{ secrets.CONTAINER_NAME }}" \
           -backend-config="key=${{ secrets.TFSTATE_KEY }}" \
           -reconfigure \
-          -force-copy
+          -force-copy \
+          -lock=false
       env:
         ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
@@ -66,6 +67,7 @@ jobs:
         ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
 
 
 

@@ -19,7 +19,7 @@ jobs:
         working-directory: ./terraform
 
     env:
-      KUBECONFIG: ~/.kube/config
+      KUBECONFIG: $HOME/.kube/config
       cluster_name: test-aks
 
     steps:
@@ -37,6 +37,14 @@ jobs:
           --resource-group ${{ secrets.RESOURCE_GROUP_NAME }} \
           --name ${{ env.cluster_name }} \
           --overwrite-existing
+
+    - name: Debug Kubeconfig
+      run: |
+        echo "KUBECONFIG=$KUBECONFIG"
+        ls -l $HOME/.kube
+        kubectl config current-context
+        kubectl get ns
+
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2

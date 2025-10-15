@@ -83,18 +83,41 @@ jobs:
            terraform refresh
         shell: bash
 
-      - name: Terraform Plan
+      #- name: Terraform Plan
+      #  run: |
+      #    terraform plan \
+      #      -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}"
+      #      # No -var for cloudflare_api_token needed here
+      #  shell: bash
+
+      - name: Terraform Apply - Modules Dependency
         run: |
-          terraform plan \
+          terraform apply \
+            -target=module.network \
+            -target=module.acr \
+            -target=module.identity \
+            -target=module.acr_pull \
+            -target=module.aks \
+            -auto-approve \
             -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}"
-            # No -var for cloudflare_api_token needed here
         shell: bash
 
-      - name: Terraform Apply
+      - name: Terraform Apply - AKS Dependency
         run: |
-          terraform apply -auto-approve \
+          terraform apply \
+            -var-file=kubernetes.tf \
+            -auto-approve \
             -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}"
         shell: bash
+
+      - name: Terraform Apply 
+        run: |
+          terraform apply \ 
+            -auto-approve \
+            -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}"
+        shell: bash
+
+
 
 
 

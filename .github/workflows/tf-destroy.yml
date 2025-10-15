@@ -18,6 +18,10 @@ jobs:
       run:
         working-directory: ./terraform
 
+    env:
+      KUBECONFIG: ~/.kube/config
+      cluster_name: test-aks
+
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4

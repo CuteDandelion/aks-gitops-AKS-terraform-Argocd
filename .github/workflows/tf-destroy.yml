@@ -33,26 +33,15 @@ jobs:
 
     - name: Get AKS Credentials
       run: |
-        az aks get-credentials \
-          --resource-group ${{ secrets.RESOURCE_GROUP_NAME }} \
-          --name ${{ env.cluster_name }} \
-          --overwrite-existing
-
-    - name: Prepare Kubeconfig
-      run: |
         mkdir -p $HOME/.kube
         az aks get-credentials \
            --resource-group ${{ secrets.RESOURCE_GROUP_NAME }} \
            --name ${{ env.cluster_name }} \
            --file $HOME/.kube/config \
            --overwrite-existing
-
-
-    - name: Debug Kubeconfig
-      run: |
-        echo "KUBECONFIG=$KUBECONFIG"
-        ls -l $HOME/.kube
-        kubectl config current-context
+        echo "✅ kubeconfig written:"
+        ls -la $HOME/.kube
+        stat $HOME/.kube/config
         kubectl get ns
 
 

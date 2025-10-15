@@ -47,8 +47,8 @@ jobs:
           az storage blob download \
             --account-name ${{ env.storage_account_name }} \
             --container-name ${{ env.container_name }} \
-            --name aks-kanban.tfvars \
-            --file aks-kanban.tfvars \
+            --name ${{ env.backend_key }} \
+            --file ${{ env.backend_key }} \
             --auth-mode login
         shell: bash
         
@@ -95,6 +95,7 @@ jobs:
           terraform apply -auto-approve \
             -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}"
         shell: bash
+
 
 
 

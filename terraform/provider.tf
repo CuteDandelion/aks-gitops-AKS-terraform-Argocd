@@ -22,3 +22,7 @@ provider "kubectl" {
   cluster_ca_certificate = module.aks.aks_cluster_ca_certificate
   load_config_file       = false
 }
+
+provider "kubernetes" {
+  config_path = "~/.kube/config"
+}

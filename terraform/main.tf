@@ -62,7 +62,7 @@ provider "kubernetes" {
   client_certificate     = try(base64decode(module.aks.kube_config[0].client_certificate), null)
   client_key             = try(base64decode(module.aks.kube_config[0].client_key), null)
   cluster_ca_certificate = try(base64decode(module.aks.kube_config[0].cluster_ca_certificate), null)
-  config_path            = "~/.kube/config"
+  config_path            = "/home/runner/.kube/config"
 }
 
 data "kubernetes_service" "nginx_ingress" {

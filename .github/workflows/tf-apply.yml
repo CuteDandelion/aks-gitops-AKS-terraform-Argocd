@@ -102,14 +102,6 @@ jobs:
             -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}"
         shell: bash
 
-      - name: Terraform Apply - AKS Dependency
-        run: |
-          terraform apply \
-            -var-file=kubernetes.tf \
-            -auto-approve \
-            -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}"
-        shell: bash
-
       - name: Terraform Apply 
         run: |
           terraform apply \ 

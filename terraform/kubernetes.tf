@@ -105,7 +105,26 @@ resource "helm_release" "argocd" {
   wait             = false
 
   values = [
-    file("../k8s-manifests/argocd/argocd.yml")
+    file("../k8s-manifests/argocd/argocd.yml") ,
+    yamlencode({
+      server = {
+        service = { type = "ClusterIP" }
+        extraArgs = [ "--insecure" ]   # allow HTTP behind ingress
+      }
+      configs = {
+        cm = {
+          url = "http://argocd.203.0.113.10.nip.io"
+        }
+      }
+      controller = {
+        resources = {
+          requests = {
+            cpu    = "200m"
+            memory = "256Mi"
+          }
+        }
+      }
+    })
   ]
 
   depends_on = [
@@ -114,6 +133,40 @@ resource "helm_release" "argocd" {
     kubernetes_namespace.argocd
   ]
 }
+
+
+resource "kubernetes_ingress_v1" "argocd_ingress" {
+  metadata {
+    name      = "argocd-ingress"
+    namespace = kubernetes_namespace.argocd.metadata[0].name
+    annotations = {
+      "kubernetes.io/ingress.class" = "nginx"
+    }
+  }
+
+  spec {
+    rule {
+      host = "argocd.203.0.113.10.nip.io"
+      http {
+        path {
+          path     = "/"
+          path_type = "Prefix"
+
+          backend {
+            service {
+              name = "argocd-server"
+              port {
+                number = 80
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
 
 resource "helm_release" "kube_prometheus_stack" {
   name             = "kube-prometheus-stack"

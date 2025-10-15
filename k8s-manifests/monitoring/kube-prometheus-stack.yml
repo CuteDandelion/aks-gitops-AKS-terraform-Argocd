@@ -9,11 +9,11 @@ prometheus:
       nginx.org/hsts: "true"
       cert-manager.io/cluster-issuer: issuer
     hosts:
-      - prometheus.hanadisa.com
+      - prometheus.203.0.113.10.nip.io
     tls:
       - secretName: prometheus-ingress-tls
         hosts:
-          - prometheus.hanadisa.com
+          - prometheus.203.0.113.10.nip.io
 
 grafana:
   enabled: true
@@ -29,11 +29,11 @@ grafana:
       nginx.org/hsts: "true"
       cert-manager.io/cluster-issuer: issuer
     hosts:
-      - grafana.hanadisa.com
+      - grafana.203.0.113.10.nip.io
     tls:
       - secretName: grafana-ingress-tls
         hosts:
-          - grafana.hanadisa.com
+          - grafana.203.0.113.10.nip.io
   persistence:
     enabled: true
     size: 10Gi

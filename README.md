@@ -175,7 +175,7 @@ Every change to the codebase or infrastructure triggers GitHub Actions workflows
 <img width="1880" height="998" alt="aks-gitplan" src="https://github.com/user-attachments/assets/dfe794e0-c8a5-4fb2-9b30-f9e0453f4204" />
 <img width="1897" height="992" alt="aks-gitapply" src="https://github.com/user-attachments/assets/93866e80-72e2-47c2-808b-5eb6b22a5156" />
 
-**Results:******
+**Results:**
 
 <img width="1918" height="1057" alt="aks-containerregistry" src="https://github.com/user-attachments/assets/0c5bafe4-35b0-463d-8464-ae9d948723f3" />
 <img width="1892" height="927" alt="aks-azureresource" src="https://github.com/user-attachments/assets/93bf9c3d-db1e-4218-9bf6-05bfa0076195" />
@@ -204,5 +204,6 @@ This setup enables:
 ## 📜 License
 
 Licensed under MIT License.
+
 
 

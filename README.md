@@ -3,7 +3,7 @@
 This project sets up a cloud-native **Kanban board app** on a Production-grade **Kubernetes cluster** running on **Azure Kubernetes Service (AKS)**. It uses **Terraform** to handle the entire infrastructure on **Azure**, and **GitHub Actions** powers a reliable **CI/CD pipeline**. An **Azure Container Registry (ACR)** is created for managing **Docker images**, and the **NGINX Ingress Controller** is used to manage global traffic securely and efficiently—including **HTTPS** support. The setup is designed for scalability, security, and smooth performance. It includes **Cert-Manager** for automatic **SSL certificates**, **ExternalDNS** for real-time DNS updates, **Helm** for managing **Kubernetes packages**, **ArgoCD** for **GitOps-based** deployment, and **Prometheus** & **Grafana** for full-stack monitoring and visibility.
 
 ## End-to-End Architecture Diagram
-<img src="https://github.com/hanadisa/aks-gitops-kanban/blob/main/docs/architecture.png?raw=true" width="1000">
+<img width="1180" height="550" alt="AzureInfra drawio" src="https://github.com/user-attachments/assets/37dd1454-9cca-419d-bde3-cf6bc5839d38" />
 
 ---
 
@@ -206,3 +206,4 @@ This setup enables:
 ## 📜 License
 
 Licensed under MIT License.
+

@@ -7,14 +7,9 @@ This project sets up a cloud-native **Kanban board app** on a Production-grade *
 
 ---
 
-## 🎥Live Demonstration
+## Application
 
-<div style="text-align: center; margin: 20px 0;">
-  <h3>Prod:</h3>
-  <div style="width: 200px; margin: 0 auto; border-radius: 10px;overflow: hidden; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-    <img src="https://github.com/hanadisa/aks-gitops-kanban/blob/main/docs/images/kanbanapp.gif?raw=true" alt="Live App GIF" width="60%" />
-  </div>
-</div>
+<img width="1895" height="1003" alt="aks-kanbanboard" src="https://github.com/user-attachments/assets/098a133d-064e-49cd-863e-3dfd5ad63d42" />
 
 --- 
 
@@ -147,8 +142,7 @@ This project automates the deployment of the Kanban board application to Azure u
 
 Kanban App is continuously deployed to AKS using ArgoCD. All Kubernetes manifests are stored in Git (`k8s-manifests/`), and ArgoCD keeps the AKS cluster in sync with the Git source of truth.
 
-<img src="https://github.com/hanadisa/aks-gitops-kanban/blob/main/docs/images/argocd.png?raw=true">
-<img src="https://github.com/hanadisa/aks-gitops-kanban/blob/main/docs/images/argocdsync.png?raw=true">
+<img width="1917" height="1065" alt="aks-argocd" src="https://github.com/user-attachments/assets/e8d66d7e-1cec-4af2-bb10-a3efdd3d15ff" />
 
 ---
 
@@ -177,10 +171,15 @@ Every change to the codebase or infrastructure triggers GitHub Actions workflows
 
 **Successful CI/CD Workflow Execution:**
 
-<img src="https://github.com/hanadisa/aks-gitops-kanban/blob/main/docs/images/docker-build.png?raw=true" width="300" alt="GitHub Actions Success">
-<img src="https://github.com/hanadisa/aks-gitops-kanban/blob/main/docs/images/tf-plan.png?raw=true" width="300" alt="GitHub Actions Success">
-<img src="https://github.com/hanadisa/aks-gitops-kanban/blob/main/docs/images/tf-apply.png?raw=true" width="300" alt="GitHub Actions Success">
-<img src="https://github.com/hanadisa/aks-gitops-kanban/blob/main/docs/images/tf-destroy.png?raw=true" width="300" alt="GitHub Actions Success">
+<img width="1890" height="1001" alt="aks-gitbuild" src="https://github.com/user-attachments/assets/2ec90d36-6785-47ab-a327-dc80f094a1ad" />
+<img width="1880" height="998" alt="aks-gitplan" src="https://github.com/user-attachments/assets/dfe794e0-c8a5-4fb2-9b30-f9e0453f4204" />
+<img width="1897" height="992" alt="aks-gitapply" src="https://github.com/user-attachments/assets/93866e80-72e2-47c2-808b-5eb6b22a5156" />
+
+**Results:******
+
+<img width="1918" height="1057" alt="aks-containerregistry" src="https://github.com/user-attachments/assets/0c5bafe4-35b0-463d-8464-ae9d948723f3" />
+<img width="1892" height="927" alt="aks-azureresource" src="https://github.com/user-attachments/assets/93bf9c3d-db1e-4218-9bf6-05bfa0076195" />
+<img width="1912" height="1005" alt="aks-kubectl" src="https://github.com/user-attachments/assets/19b87c15-82b0-4c51-aed0-e986ce412c78" />
 
 ---
 
@@ -190,9 +189,9 @@ The Kanban board app and monitoring tools are publicly accessible via custom sub
 
 DNS `CNAME` records are configured in Cloudflare to point to the Azure Ingress or Front Door endpoints for the following services:
 
-- `kanban.hanadisa.com` → Kanban board app
-- `grafana.hanadisa.com` → Grafana dashboards
-- `prometheus.hanadisa.com` → Prometheus monitoring UI
+- `kanban.misakirose.com` → Kanban board app
+- `grafana.misakirose.com` → Grafana dashboards
+- `prometheus.misakirose.com` → Prometheus monitoring UI
 
 This setup enables:
 
@@ -200,10 +199,10 @@ This setup enables:
 - Real-time DNS resolution via **ExternalDNS**
 - Secure HTTPS access via certificates provisioned by **Cert-Manager**
 
-<img src="https://github.com/hanadisa/aks-gitops-kanban/blob/main/docs/images/dnsrecord.png?raw=true" width="650" alt="Cloudflare DNS Record">
-
+<img width="1877" height="896" alt="aks-cloudflare" src="https://github.com/user-attachments/assets/2c993e4d-dd2e-41a2-a2da-280c1134f9b6" />
 
 ## 📜 License
 
 Licensed under MIT License.
+
 

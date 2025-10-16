@@ -203,9 +203,14 @@ This setup enables:
 
 <img width="1877" height="896" alt="aks-cloudflare" src="https://github.com/user-attachments/assets/2c993e4d-dd2e-41a2-a2da-280c1134f9b6" />
 
+### ✅ Interesting Resources
+
+<img width="1837" height="1211" alt="1_JtceaFulltw3ILg1kRd8Bg" src="https://github.com/user-attachments/assets/b7dc432e-a51b-45c5-8a21-a0cc4c6c0016" />
+
 ## 📜 License
 
 Licensed under MIT License.
+
 
 
 

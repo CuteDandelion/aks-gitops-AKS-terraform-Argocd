@@ -23,7 +23,7 @@ jobs:
       storage_account_name: rmttfstatejustin
       container_name: tfstate
       backend_key: aks-kanban.tfstate
-      KUBECONFIG: ~/.kube/config
+      KUBECONFIG: $HOME/.kube/config
       cluster_name: test-aks
       TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }} 
 
@@ -97,14 +97,27 @@ jobs:
             -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}"
         shell: bash
 
-      #- name: Terraform Apply - Ingress Dependency
-      #  run: |
-      #    terraform apply \
-      #      -target=kubernetes_namespace.ingress_nginx \
-      #      -target=helm_release.nginx_ingress \
-      #      -auto-approve \
-      #      -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}"
-      #  shell: bash
+      - name: Get AKS Credentials
+        run: |
+          mkdir -p $HOME/.kube
+          az aks get-credentials \
+            --resource-group ${{ secrets.RESOURCE_GROUP_NAME }} \
+            --name ${{ env.cluster_name }} \
+            --file $HOME/.kube/config \
+            --overwrite-existing
+          echo "✅ kubeconfig written:"
+          ls -la $HOME/.kube
+          stat $HOME/.kube/config
+          kubectl get ns
+
+      - name: Terraform Apply - Ingress Dependency
+        run: |
+          terraform apply \
+            -target=kubernetes_namespace.ingress_nginx \
+            -target=helm_release.nginx_ingress \
+            -auto-approve \
+            -var="ssh_public_key_data=${{ secrets.SSH_PUBLIC_KEY_AKS }}"
+        shell: bash
 
 
       - name: Terraform Apply 

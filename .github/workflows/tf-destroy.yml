@@ -79,14 +79,16 @@ jobs:
      #   ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
      #   ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    - name: Terraform Destroy
-      run: terraform destroy -auto-approve -lock=false
+    - name: Terraform Destroy aks cluster
+      run: terraform destroy -target=module.aks -auto-approve -lock=false
       #env:
       #  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       #  ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
       #  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       #  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+    - name: Terraform Destroy 
+      run: terraform destroy -auto-approve -lock=false
 
 
 

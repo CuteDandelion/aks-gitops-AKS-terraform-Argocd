@@ -23,7 +23,7 @@ jobs:
       storage_account_name: rmttfstatejustin
       container_name: tfstate
       backend_key: aks-kanban.tfstate
-      KUBECONFIG: $HOME/.kube/config
+      KUBECONFIG: /home/runner/.kube/config
       cluster_name: test-aks
       TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }} 
 

@@ -55,19 +55,6 @@ jobs:
       - name: Write terraform.tfvars from secret
         run: echo "${{ secrets.TF_VARS }}" | base64 --decode > terraform.tfvars
 
-      - name: Get AKS Credentials
-        run: |
-          mkdir -p $HOME/.kube
-          az aks get-credentials \
-            --resource-group ${{ secrets.RESOURCE_GROUP_NAME }} \
-            --name ${{ env.cluster_name }} \
-            --file $HOME/.kube/config \
-            --overwrite-existing
-          echo "✅ kubeconfig written:"
-          ls -la $HOME/.kube
-          stat $HOME/.kube/config
-          kubectl get ns
-
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
